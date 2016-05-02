@@ -11,6 +11,8 @@ server {
     ssl_certificate      %ssl_pem%;
     ssl_certificate_key  %ssl_key%;
 
+    rewrite ^/(.*.php)(/)(.*)$ /$1?file=/$3 last;
+
     location / {
 
         location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
@@ -18,6 +20,7 @@ server {
         }
 
         location ~ [^/]\.php(/|$) {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             if (!-f $document_root$fastcgi_script_name) {
                 return  404;
